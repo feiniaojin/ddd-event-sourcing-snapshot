@@ -71,6 +71,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             snapshot.setEventTime(lastDomainEvent.getEventTime());
             //快照中不保存本次的领域事件
             product.getDomainEvents().clear();
+            product.setTakeSnapshot(Boolean.FALSE);
             //生成聚合根快照
             snapshot.setEntityData(JSON.toJsonString(product));
             snapshotJdbcRepository.save(snapshot);
@@ -90,6 +91,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             events = eventJdbcRepository.loadHistoryEvents(productId.getValue());
         } else {
             product = JSON.toObject(snapshot.getEntityData(), Product.class);
+            product.setTakeSnapshot(Boolean.FALSE);
             events = eventJdbcRepository.loadEventsAfter(productId.getValue(), snapshot.getEventTime());
         }
 
